@@ -7,8 +7,8 @@
 	--accent-2: #9f7cff;
 	--danger: #ff6b6b;
 	--shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-	--radius-xl: 28px;
-	--radius-lg: 18px;
+	--radius-xl: 16px;
+	--radius-lg: 8px;
 	--pad: clamp(16px, 2vw, 28px);
 	--gap: clamp(14px, 1.5vw, 22px);
 	--control-h: 54px;
