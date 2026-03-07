@@ -525,7 +525,7 @@ h1 {
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
   <script>
-    (() => {
+	(() => {
 	const CONFIG = {
 		players: [
 			{
@@ -612,10 +612,7 @@ h1 {
 		const secs = total % 60;
 
 		if (hours > 0) {
-			return `${hours}:${String(mins).padStart(2, "0")}:${String(secs).padStart(
-				2,
-				"0"
-			)}`;
+			return `${hours}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 		}
 
 		return `${mins}:${String(secs).padStart(2, "0")}`;
@@ -642,30 +639,46 @@ h1 {
 	}
 
 	function playOne(playerObj) {
-		if (!playerObj?.instance) return;
-		if (isYouTube(playerObj)) playerObj.instance.playVideo();
-		else playerObj.instance.play();
+		if (!playerObj?.instance || !playerObj.ready) return;
+
+		if (isYouTube(playerObj)) {
+			playerObj.instance.playVideo();
+			return;
+		}
+
+		try {
+			const current = getCurrentOne(playerObj);
+			playerObj.instance.seek(current || playerObj.start || 0);
+		} catch {}
+
+		playerObj.instance.play();
 	}
 
 	function pauseOne(playerObj) {
-		if (!playerObj?.instance) return;
-		if (isYouTube(playerObj)) playerObj.instance.pauseVideo();
-		else playerObj.instance.pause();
+		if (!playerObj?.instance || !playerObj.ready) return;
+
+		if (isYouTube(playerObj)) {
+			playerObj.instance.pauseVideo();
+			return;
+		}
+
+		playerObj.instance.pause();
 	}
 
 	function stopOne(playerObj) {
-		if (!playerObj?.instance) return;
+		if (!playerObj?.instance || !playerObj.ready) return;
 
 		if (isYouTube(playerObj)) {
 			playerObj.instance.stopVideo();
-		} else {
-			playerObj.instance.pause();
-			playerObj.instance.seek(playerObj.start || 0);
+			return;
 		}
+
+		playerObj.instance.pause();
+		playerObj.instance.seek(playerObj.start || 0);
 	}
 
 	function seekOne(playerObj, absoluteTime, allowPlayState = true) {
-		if (!playerObj?.instance) return;
+		if (!playerObj?.instance || !playerObj.ready) return;
 
 		if (isYouTube(playerObj)) {
 			playerObj.instance.seekTo(absoluteTime, true);
@@ -690,7 +703,7 @@ h1 {
 	}
 
 	function setMutedOne(playerObj, muted) {
-		if (!playerObj?.instance) return;
+		if (!playerObj?.instance || !playerObj.ready) return;
 
 		if (isYouTube(playerObj)) {
 			if (muted) playerObj.instance.mute();
@@ -712,7 +725,7 @@ h1 {
 	}
 
 	function getPlayingOne(playerObj) {
-		if (!playerObj?.instance) return false;
+		if (!playerObj?.instance || !playerObj.ready) return false;
 
 		if (isYouTube(playerObj)) {
 			try {
@@ -767,7 +780,7 @@ h1 {
 
 	function updateTimeline() {
 		const master = getMaster();
-		if (!master || !master.instance) return;
+		if (!master || !master.instance || !master.ready) return;
 
 		const current = getRelativeCurrent(master);
 		const duration = getRelativeDuration(master);
@@ -783,32 +796,32 @@ h1 {
 		updatePlayButton();
 	}
 
-	function runBoth(callback) {
+	function runAll(callback) {
 		state.players.forEach((playerObj) => {
 			if (playerObj.instance) callback(playerObj);
 		});
 	}
 
 	function playBoth() {
-		runBoth((playerObj) => playOne(playerObj));
+		runAll((playerObj) => playOne(playerObj));
 		setStatus("Playing all");
 		updatePlayButton();
 	}
 
 	function pauseBoth() {
-		runBoth((playerObj) => pauseOne(playerObj));
+		runAll((playerObj) => pauseOne(playerObj));
 		setStatus("Paused");
 		updatePlayButton();
 	}
 
 	function stopBoth() {
-		runBoth((playerObj) => stopOne(playerObj));
+		runAll((playerObj) => stopOne(playerObj));
 		setStatus("Stopped");
 		updatePlayButton();
 	}
 
 	function restartBoth() {
-		runBoth((playerObj) => {
+		runAll((playerObj) => {
 			seekOne(playerObj, playerObj.start, false);
 			playOne(playerObj);
 		});
@@ -817,17 +830,15 @@ h1 {
 	}
 
 	function offsetBoth(seconds) {
-		runBoth((playerObj) => {
+		runAll((playerObj) => {
 			const current = getCurrentOne(playerObj);
 			seekOne(playerObj, Math.max(0, current + seconds));
 		});
-		setStatus(
-			seconds > 0 ? `Forward ${seconds}s` : `Rewind ${Math.abs(seconds)}s`
-		);
+		setStatus(seconds > 0 ? `Forward ${seconds}s` : `Rewind ${Math.abs(seconds)}s`);
 	}
 
 	function seekRelativeTo(relativeTime, shouldPlayAfter = false) {
-		runBoth((playerObj) => {
+		runAll((playerObj) => {
 			seekOne(playerObj, playerObj.start + relativeTime, shouldPlayAfter);
 			if (shouldPlayAfter) playOne(playerObj);
 		});
@@ -851,11 +862,13 @@ h1 {
 		if (state.isScrubbing || !isAnyPlaying() || state.players.length < 2) return;
 
 		const master = getMaster();
-		if (!master?.instance) return;
+		if (!master?.instance || !master.ready) return;
 
 		const masterTime = getCurrentOne(master);
 
 		state.players.slice(1).forEach((playerObj) => {
+			if (!playerObj.ready) return;
+
 			const current = getCurrentOne(playerObj);
 			const diff = Math.abs(current - masterTime);
 
@@ -891,6 +904,11 @@ h1 {
 
 		try {
 			event.target.setPlaybackQuality(playerObj.quality);
+		} catch {}
+
+		try {
+			event.target.pauseVideo();
+			event.target.seekTo(playerObj.start, true);
 		} catch {}
 
 		if (playerObj.id === "player1") {
@@ -929,11 +947,12 @@ h1 {
 				player.setQuality(playerObj.quality || "chunked");
 			} catch {}
 
-			if (playerObj.id === "player1") {
-				state.firstMuted = getMutedOne(playerObj);
-			} else {
-				player.setMuted(true);
-			}
+			try {
+				player.seek(playerObj.start || 0);
+				player.pause();
+			} catch {}
+
+			player.setMuted(true);
 
 			updateMuteButton();
 			markReady();
@@ -1087,17 +1106,17 @@ h1 {
 		if (state.uiInterval) clearInterval(state.uiInterval);
 		if (state.resyncInterval) clearInterval(state.resyncInterval);
 
-		runBoth(({ instance, platform }) => {
+		runAll(({ instance, platform }) => {
 			try {
 				if (platform === "youtube" && instance.destroy) instance.destroy();
 			} catch {}
 		});
 	});
 })();
-
   </script>
 </body>
 </html>
+
 
 
 
