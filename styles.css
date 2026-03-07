@@ -99,6 +99,22 @@ h1 {
 	letter-spacing: -0.03em;
 }
 
+.meta {
+	color: var(--text-soft);
+	font-size: 0.95rem;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.dot {
+	width: 5px;
+	height: 5px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.28);
+}
+
 .controls-wrap {
 	display: grid;
 	gap: 14px;
@@ -184,18 +200,8 @@ h1 {
 }
 
 .material-symbols-rounded {
-	font-family: "Material Symbols Rounded";
-	font-weight: 500;
-	font-style: normal;
-	font-size: 26px;
+	font-size: 24px;
 	line-height: 1;
-	letter-spacing: normal;
-	text-transform: none;
-	display: inline-block;
-	white-space: nowrap;
-	direction: ltr;
-	-webkit-font-smoothing: antialiased;
-	font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
 }
 
 .timeline-row {
@@ -290,13 +296,13 @@ h1 {
 }
 
 .video-title {
+	/* 	background: lime; */
 	background: rgba(0, 0, 0, 0.6);
 	position: absolute;
 	text-align: center;
 	left: 50%;
 	transform: translateX(-50%);
 	padding: 4px 12px;
-	z-index: 2;
 }
 
 .teams {
@@ -311,28 +317,24 @@ h1 {
 	border-bottom: 1px solid #6969ff;
 	border-right: 1px solid #6969ff;
 }
-
 .team-progression {
 	color: #008800;
 	border-left: 1px solid #008800;
 	border-bottom: 1px solid #008800;
 	border-right: 1px solid #008800;
 }
-
 .team-tower {
 	color: #ff4d4d;
 	border-left: 1px solid #ff4d4d;
 	border-bottom: 1px solid #ff4d4d;
 	border-right: 1px solid #ff4d4d;
 }
-
 .team-pit {
 	color: #ae00ff;
 	border-left: 1px solid #ae00ff;
 	border-bottom: 1px solid #ae00ff;
 	border-right: 1px solid #ae00ff;
 }
-
 .team-trist-hole {
 	color: #ffa800;
 	border-left: 1px solid #ffa800;
