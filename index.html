@@ -235,7 +235,7 @@ function stopTwitch() {
 
 	try {
 		twitchPlayer.pause();
-		twitchPlayer.seek(twitchStart);
+		twitchPlayer.setVideo("v2609194736", 0);
 	} catch {}
 }
 
@@ -479,30 +479,29 @@ function stopBoth() {
 	}
 
 	function initTwitchPlayer() {
-		twitchPlayer = new Twitch.Player("player6", {
-			width: "100%",
-			height: "100%",
-			video: "v2609194736",
-			parent: [window.location.hostname],
-			autoplay: false,
-			muted: true
-		});
+	twitchPlayer = new Twitch.Player("player6", {
+		width: "100%",
+		height: "100%",
+		video: "v2609194736",
+		parent: [window.location.hostname],
+		autoplay: false,
+		muted: true,
+		time: "0h0m0s"
+	});
 
-		twitchPlayer.addEventListener(Twitch.Player.READY, () => {
-			twitchReady = true;
+	twitchPlayer.addEventListener(Twitch.Player.READY, () => {
+		twitchReady = true;
 
-			try {
-				twitchPlayer.setQuality("chunked");
-			} catch {}
+		try {
+			twitchPlayer.setQuality("chunked");
+		} catch {}
 
-			try {
-				twitchPlayer.setMuted(true);
-				twitchPlayer.pause();
-				twitchPlayer.seek(twitchStart);
-			} catch {}
-
-			updatePlayButton();
-		});
+		try {
+			twitchPlayer.setMuted(true);
+			twitchPlayer.pause();
+			twitchPlayer.setVideo("v2609194736", 0);
+		} catch {}
+	});
 
 		twitchPlayer.addEventListener(Twitch.Player.PLAYBACK_BLOCKED, () => {
 			setStatus("Twitch playback blocked");
@@ -639,6 +638,7 @@ function stopBoth() {
 </script>
 </body>
 </html>
+
 
 
 
