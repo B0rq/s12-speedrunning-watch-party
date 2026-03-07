@@ -266,7 +266,7 @@ h1 {
 
 .grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: var(--gap);
 	padding: 0 var(--pad) var(--pad);
 }
