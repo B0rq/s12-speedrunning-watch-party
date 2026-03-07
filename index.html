@@ -112,22 +112,6 @@ h1 {
 	letter-spacing: -0.03em;
 }
 
-.meta {
-	color: var(--text-soft);
-	font-size: 0.95rem;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	flex-wrap: wrap;
-}
-
-.dot {
-	width: 5px;
-	height: 5px;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.28);
-}
-
 .controls-wrap {
 	display: grid;
 	gap: 14px;
@@ -213,8 +197,18 @@ h1 {
 }
 
 .material-symbols-rounded {
-	font-size: 24px;
+	font-family: "Material Symbols Rounded";
+	font-weight: 500;
+	font-style: normal;
+	font-size: 26px;
 	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	direction: ltr;
+	-webkit-font-smoothing: antialiased;
+	font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
 }
 
 .timeline-row {
@@ -309,9 +303,54 @@ h1 {
 }
 
 .video-title {
-/* 	background: lime; */
-	background: rgba(0,0,0,1);
+	background: rgba(0, 0, 0, 0.6);
+	position: absolute;
 	text-align: center;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 4px 12px;
+	z-index: 2;
+}
+
+.teams {
+	font-size: 12px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.team-harvest {
+	color: #6969ff;
+	border-left: 1px solid #6969ff;
+	border-bottom: 1px solid #6969ff;
+	border-right: 1px solid #6969ff;
+}
+
+.team-progression {
+	color: #008800;
+	border-left: 1px solid #008800;
+	border-bottom: 1px solid #008800;
+	border-right: 1px solid #008800;
+}
+
+.team-tower {
+	color: #ff4d4d;
+	border-left: 1px solid #ff4d4d;
+	border-bottom: 1px solid #ff4d4d;
+	border-right: 1px solid #ff4d4d;
+}
+
+.team-pit {
+	color: #ae00ff;
+	border-left: 1px solid #ae00ff;
+	border-bottom: 1px solid #ae00ff;
+	border-right: 1px solid #ae00ff;
+}
+
+.team-trist-hole {
+	color: #ffa800;
+	border-left: 1px solid #ffa800;
+	border-bottom: 1px solid #ffa800;
+	border-right: 1px solid #ffa800;
 }
 
 .footer-note {
@@ -377,6 +416,7 @@ h1 {
 	}
 }
 
+
   </style>
 </head>
 <body>
@@ -392,19 +432,19 @@ h1 {
 
 		<div class="controls-wrap">
 			<div class="controls" aria-label="Video controls">
-				<button class="btn btn--primary" id="togglePlay" type="button" aria-label="Play both videos">
+				<button class="btn btn--primary" id="togglePlay" type="button" aria-label="Play all videos">
 					<span class="material-symbols-rounded" id="togglePlayIcon">play_arrow</span>
 				</button>
 
-				<button class="btn" id="restartBoth" type="button" aria-label="Restart both videos">
+				<button class="btn" id="restartBoth" type="button" aria-label="Restart all videos">
 					<span class="material-symbols-rounded">replay</span>
 				</button>
 
-				<button class="btn" id="rewindBoth" type="button" aria-label="Rewind both videos by 10 seconds">
+				<button class="btn" id="rewindBoth" type="button" aria-label="Rewind all videos by 10 seconds">
 					<span class="material-symbols-rounded">replay_10</span>
 				</button>
 
-				<button class="btn" id="forwardBoth" type="button" aria-label="Fast forward both videos by 10 seconds">
+				<button class="btn" id="forwardBoth" type="button" aria-label="Fast forward all videos by 10 seconds">
 					<span class="material-symbols-rounded">forward_10</span>
 				</button>
 
@@ -412,7 +452,7 @@ h1 {
 					<span class="material-symbols-rounded" id="muteFirstIcon">volume_up</span>
 				</button>
 
-				<button class="btn btn--danger" id="stopBoth" type="button" aria-label="Stop both videos">
+				<button class="btn btn--danger" id="stopBoth" type="button" aria-label="Stop all videos">
 					<span class="material-symbols-rounded">stop</span>
 				</button>
 			</div>
@@ -426,30 +466,44 @@ h1 {
 
 		<div class="grid">
 			<article class="video-card">
-				<div class="video-title">Tele Sorc</div>
+				<div class="video-title teams team-harvest">Tele Sorc</div>
 				<div class="video-shell">
 					<div id="player1"></div>
 				</div>
 			</article>
 
 			<article class="video-card">
-			<div class="video-title">Sin</div>
+				<div class="video-title teams team-progression">Assassin</div>
 				<div class="video-shell">
 					<div id="player2"></div>
 				</div>
 			</article>
 
 			<article class="video-card">
-				<div class="video-title">Barb</div>
+				<div class="video-title teams team-trist-hole">Barb</div>
 				<div class="video-shell">
 					<div id="player3"></div>
 				</div>
 			</article>
 
 			<article class="video-card">
-				<div class="video-title">Necro</div>
+				<div class="video-title teams team-pit">Necro</div>
 				<div class="video-shell">
 					<div id="player4"></div>
+				</div>
+			</article>
+
+			<article class="video-card">
+				<div class="video-title teams team-tower">Assassin aka Pally 1</div>
+				<div class="video-shell">
+					<div id="player5"></div>
+				</div>
+			</article>
+
+			<article class="video-card">
+				<div class="video-title teams">Necro</div>
+				<div class="video-shell">
+					<div id="player6"></div>
 				</div>
 			</article>
 		</div>
@@ -469,23 +523,65 @@ h1 {
 </main>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://player.twitch.tv/js/embed/v1.js"></script>
   <script>
     (() => {
 	const CONFIG = {
 		players: [
-			{ id: "player1", videoId: "9pvRbezK8Ko", start: 41, quality: "hd720" },
-			{ id: "player2", videoId: "_IWYetw6X1Q", start: 11, quality: "hd1080" },
-			{ id: "player3", videoId: "3H0DvdlLVEU", start: 129, quality: "hd1080" },
-			{ id: "player4", videoId: "X0KH7VcogFE", start: 95, quality: "hd1080" }
+			{
+				id: "player1",
+				platform: "youtube",
+				videoId: "9pvRbezK8Ko",
+				start: 41,
+				quality: "hd720"
+			},
+			{
+				id: "player2",
+				platform: "youtube",
+				videoId: "_IWYetw6X1Q",
+				start: 11,
+				quality: "hd1080"
+			},
+			{
+				id: "player3",
+				platform: "youtube",
+				videoId: "3H0DvdlLVEU",
+				start: 129,
+				quality: "hd1080"
+			},
+			{
+				id: "player4",
+				platform: "youtube",
+				videoId: "X0KH7VcogFE",
+				start: 95,
+				quality: "hd1080"
+			},
+			{
+				id: "player5",
+				platform: "youtube",
+				videoId: "aMVdJk2GGNw",
+				start: 5,
+				quality: "hd720"
+			},
+			{
+				id: "player6",
+				platform: "twitch",
+				videoId: "2609194736",
+				start: 0,
+				quality: "chunked"
+			}
 		],
 		seekStep: 10,
-		uiTickMs: 120
+		uiTickMs: 120,
+		resyncEveryMs: 500,
+		resyncThresholdSeconds: 0.4
 	};
 
 	const state = {
 		players: [],
 		readyCount: 0,
 		uiInterval: null,
+		resyncInterval: null,
 		isScrubbing: false,
 		firstMuted: false
 	};
@@ -533,22 +629,108 @@ h1 {
 		return state.players[0] || null;
 	}
 
-	function getFirstPlayer() {
-		return state.players[0]?.instance || null;
+	function getFirstPlayerObj() {
+		return state.players[0] || null;
 	}
 
-	function getPlayerState(player) {
+	function isYouTube(playerObj) {
+		return playerObj?.platform === "youtube";
+	}
+
+	function isTwitch(playerObj) {
+		return playerObj?.platform === "twitch";
+	}
+
+	function playOne(playerObj) {
+		if (!playerObj?.instance) return;
+		if (isYouTube(playerObj)) playerObj.instance.playVideo();
+		else playerObj.instance.play();
+	}
+
+	function pauseOne(playerObj) {
+		if (!playerObj?.instance) return;
+		if (isYouTube(playerObj)) playerObj.instance.pauseVideo();
+		else playerObj.instance.pause();
+	}
+
+	function stopOne(playerObj) {
+		if (!playerObj?.instance) return;
+
+		if (isYouTube(playerObj)) {
+			playerObj.instance.stopVideo();
+		} else {
+			playerObj.instance.pause();
+			playerObj.instance.seek(playerObj.start || 0);
+		}
+	}
+
+	function seekOne(playerObj, absoluteTime, allowPlayState = true) {
+		if (!playerObj?.instance) return;
+
+		if (isYouTube(playerObj)) {
+			playerObj.instance.seekTo(absoluteTime, true);
+			return;
+		}
+
+		playerObj.instance.seek(absoluteTime);
+
+		if (!allowPlayState) {
+			playerObj.instance.pause();
+		}
+	}
+
+	function getCurrentOne(playerObj) {
+		if (!playerObj?.instance?.getCurrentTime) return 0;
+		return playerObj.instance.getCurrentTime();
+	}
+
+	function getDurationOne(playerObj) {
+		if (!playerObj?.instance?.getDuration) return 0;
+		return playerObj.instance.getDuration();
+	}
+
+	function setMutedOne(playerObj, muted) {
+		if (!playerObj?.instance) return;
+
+		if (isYouTube(playerObj)) {
+			if (muted) playerObj.instance.mute();
+			else playerObj.instance.unMute();
+			return;
+		}
+
+		playerObj.instance.setMuted(muted);
+	}
+
+	function getMutedOne(playerObj) {
+		if (!playerObj?.instance) return false;
+
+		if (isYouTube(playerObj)) {
+			return playerObj.instance.isMuted ? playerObj.instance.isMuted() : false;
+		}
+
+		return playerObj.instance.getMuted ? playerObj.instance.getMuted() : false;
+	}
+
+	function getPlayingOne(playerObj) {
+		if (!playerObj?.instance) return false;
+
+		if (isYouTube(playerObj)) {
+			try {
+				return playerObj.instance.getPlayerState() === YT.PlayerState.PLAYING;
+			} catch {
+				return false;
+			}
+		}
+
 		try {
-			return player?.getPlayerState?.();
+			return !playerObj.instance.isPaused();
 		} catch {
-			return -1;
+			return false;
 		}
 	}
 
 	function isAnyPlaying() {
-		return state.players.some(
-			(p) => getPlayerState(p.instance) === YT.PlayerState.PLAYING
-		);
+		return state.players.some((playerObj) => getPlayingOne(playerObj));
 	}
 
 	function updatePlayButton() {
@@ -556,7 +738,7 @@ h1 {
 		els.togglePlayIcon.textContent = playing ? "pause" : "play_arrow";
 		els.togglePlay.setAttribute(
 			"aria-label",
-			playing ? "Pause both videos" : "Play both videos"
+			playing ? "Pause all videos" : "Play all videos"
 		);
 	}
 
@@ -570,13 +752,11 @@ h1 {
 	}
 
 	function getRelativeCurrent(playerObj) {
-		if (!playerObj?.instance?.getCurrentTime) return 0;
-		return Math.max(0, playerObj.instance.getCurrentTime() - playerObj.start);
+		return Math.max(0, getCurrentOne(playerObj) - playerObj.start);
 	}
 
 	function getRelativeDuration(playerObj) {
-		if (!playerObj?.instance?.getDuration) return 0;
-		return Math.max(0, playerObj.instance.getDuration() - playerObj.start);
+		return Math.max(0, getDurationOne(playerObj) - playerObj.start);
 	}
 
 	function syncTimelineVisual(value, max) {
@@ -610,36 +790,36 @@ h1 {
 	}
 
 	function playBoth() {
-		runBoth(({ instance }) => instance.playVideo());
-		setStatus("Playing both");
+		runBoth((playerObj) => playOne(playerObj));
+		setStatus("Playing all");
 		updatePlayButton();
 	}
 
 	function pauseBoth() {
-		runBoth(({ instance }) => instance.pauseVideo());
+		runBoth((playerObj) => pauseOne(playerObj));
 		setStatus("Paused");
 		updatePlayButton();
 	}
 
 	function stopBoth() {
-		runBoth(({ instance }) => instance.stopVideo());
+		runBoth((playerObj) => stopOne(playerObj));
 		setStatus("Stopped");
 		updatePlayButton();
 	}
 
 	function restartBoth() {
-		runBoth(({ instance, start }) => {
-			instance.seekTo(start, true);
-			instance.playVideo();
+		runBoth((playerObj) => {
+			seekOne(playerObj, playerObj.start, false);
+			playOne(playerObj);
 		});
 		setStatus("Restarted");
 		updatePlayButton();
 	}
 
 	function offsetBoth(seconds) {
-		runBoth(({ instance }) => {
-			const current = instance.getCurrentTime();
-			instance.seekTo(Math.max(0, current + seconds), true);
+		runBoth((playerObj) => {
+			const current = getCurrentOne(playerObj);
+			seekOne(playerObj, Math.max(0, current + seconds));
 		});
 		setStatus(
 			seconds > 0 ? `Forward ${seconds}s` : `Rewind ${Math.abs(seconds)}s`
@@ -647,9 +827,9 @@ h1 {
 	}
 
 	function seekRelativeTo(relativeTime, shouldPlayAfter = false) {
-		runBoth(({ instance, start }) => {
-			instance.seekTo(start + relativeTime, true);
-			if (shouldPlayAfter) instance.playVideo();
+		runBoth((playerObj) => {
+			seekOne(playerObj, playerObj.start + relativeTime, shouldPlayAfter);
+			if (shouldPlayAfter) playOne(playerObj);
 		});
 
 		els.currentTime.textContent = formatTime(relativeTime);
@@ -658,35 +838,63 @@ h1 {
 	}
 
 	function toggleMuteFirst() {
-		const first = getFirstPlayer();
-		if (!first) return;
+		const firstObj = getFirstPlayerObj();
+		if (!firstObj) return;
 
-		if (state.firstMuted) {
-			first.unMute();
-			state.firstMuted = false;
-			setStatus("First video unmuted");
-		} else {
-			first.mute();
-			state.firstMuted = true;
-			setStatus("First video muted");
-		}
-
+		state.firstMuted = !state.firstMuted;
+		setMutedOne(firstObj, state.firstMuted);
 		updateMuteButton();
+		setStatus(state.firstMuted ? "First video muted" : "First video unmuted");
 	}
 
-	function onPlayerReady(event) {
+	function resyncPlayers() {
+		if (state.isScrubbing || !isAnyPlaying() || state.players.length < 2) return;
+
+		const master = getMaster();
+		if (!master?.instance) return;
+
+		const masterTime = getCurrentOne(master);
+
+		state.players.slice(1).forEach((playerObj) => {
+			const current = getCurrentOne(playerObj);
+			const diff = Math.abs(current - masterTime);
+
+			if (diff > CONFIG.resyncThresholdSeconds) {
+				seekOne(playerObj, masterTime);
+			}
+		});
+	}
+
+	function markReady() {
+		state.readyCount += 1;
+
+		if (state.readyCount === CONFIG.players.length) {
+			updateTimeline();
+
+			if (!state.uiInterval) {
+				state.uiInterval = setInterval(updateTimeline, CONFIG.uiTickMs);
+			}
+
+			if (!state.resyncInterval) {
+				state.resyncInterval = setInterval(resyncPlayers, CONFIG.resyncEveryMs);
+			}
+
+			setStatus("Loaded");
+		}
+	}
+
+	function onYouTubeReady(event) {
 		const playerObj = state.players.find((p) => p.instance === event.target);
 		if (!playerObj) return;
 
 		playerObj.ready = true;
-		state.readyCount += 1;
 
 		try {
 			event.target.setPlaybackQuality(playerObj.quality);
 		} catch {}
 
 		if (playerObj.id === "player1") {
-			state.firstMuted = event.target.isMuted ? event.target.isMuted() : false;
+			state.firstMuted = getMutedOne(playerObj);
 
 			if (state.firstMuted) {
 				try {
@@ -699,32 +907,76 @@ h1 {
 		}
 
 		updateMuteButton();
-
-		if (state.readyCount === CONFIG.players.length) {
-			updateTimeline();
-
-			if (!state.uiInterval) {
-				state.uiInterval = setInterval(updateTimeline, CONFIG.uiTickMs);
-			}
-
-			setStatus("Loaded");
-		}
+		markReady();
 	}
 
-	function onPlayerStateChange() {
+	function onYouTubeStateChange() {
 		updatePlayButton();
 	}
 
-	function onPlayerError(event, label) {
+	function onYouTubeError(event, label) {
 		setStatus(`${label} error: ${event.data}`);
 		console.error(`${label} error`, event.data);
 	}
 
+	function attachTwitchEvents(playerObj) {
+		const player = playerObj.instance;
+
+		player.addEventListener(Twitch.Player.READY, () => {
+			playerObj.ready = true;
+
+			try {
+				player.setQuality(playerObj.quality || "chunked");
+			} catch {}
+
+			if (playerObj.id === "player1") {
+				state.firstMuted = getMutedOne(playerObj);
+			} else {
+				player.setMuted(true);
+			}
+
+			updateMuteButton();
+			markReady();
+		});
+
+		player.addEventListener(Twitch.Player.PLAY, updatePlayButton);
+		player.addEventListener(Twitch.Player.PLAYING, updatePlayButton);
+		player.addEventListener(Twitch.Player.PAUSE, updatePlayButton);
+		player.addEventListener(Twitch.Player.ENDED, updatePlayButton);
+
+		player.addEventListener(Twitch.Player.PLAYBACK_BLOCKED, () => {
+			setStatus("Twitch playback blocked");
+		});
+	}
+
 	window.onYouTubeIframeAPIReady = function () {
 		const origin = window.location.origin;
+		const parentHost = window.location.hostname;
 
 		state.players = CONFIG.players.map((cfg, index) => {
-			const instance = new YT.Player(cfg.id, {
+			let instance;
+
+			if (cfg.platform === "twitch") {
+				instance = new Twitch.Player(cfg.id, {
+					width: "100%",
+					height: "100%",
+					video: cfg.videoId.startsWith("v") ? cfg.videoId : `v${cfg.videoId}`,
+					parent: [parentHost],
+					autoplay: false,
+					muted: true
+				});
+
+				const playerObj = {
+					...cfg,
+					instance,
+					ready: false
+				};
+
+				attachTwitchEvents(playerObj);
+				return playerObj;
+			}
+
+			instance = new YT.Player(cfg.id, {
 				width: "100%",
 				height: "100%",
 				videoId: cfg.videoId,
@@ -738,9 +990,9 @@ h1 {
 					start: cfg.start
 				},
 				events: {
-					onReady: onPlayerReady,
-					onStateChange: onPlayerStateChange,
-					onError: (e) => onPlayerError(e, `Player ${index + 1}`)
+					onReady: onYouTubeReady,
+					onStateChange: onYouTubeStateChange,
+					onError: (e) => onYouTubeError(e, `Player ${index + 1}`)
 				}
 			});
 
@@ -833,15 +1085,19 @@ h1 {
 
 	window.addEventListener("beforeunload", () => {
 		if (state.uiInterval) clearInterval(state.uiInterval);
-		runBoth(({ instance }) => {
+		if (state.resyncInterval) clearInterval(state.resyncInterval);
+
+		runBoth(({ instance, platform }) => {
 			try {
-				instance.destroy();
+				if (platform === "youtube" && instance.destroy) instance.destroy();
 			} catch {}
 		});
 	});
 })();
+
   </script>
 </body>
 </html>
+
 
 
