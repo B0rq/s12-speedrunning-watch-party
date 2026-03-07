@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="app">
+<main class="app">
 	<section class="panel">
 		<div class="topbar">
 			<div class="eyebrow">S12 PD2 WR Speedrun 1:35:54</div>
@@ -61,7 +61,7 @@
 			</article>
 
 			<article class="video-card">
-			<div class="video-title teams team-progression">Assassin</div>
+				<div class="video-title teams team-progression">Assassin</div>
 				<div class="video-shell">
 					<div id="player2"></div>
 				</div>
@@ -87,21 +87,14 @@
 					<div id="player5" style="zoom:200%;"></div>
 				</div>
 			</article>
-			
-			
+
 			<article class="video-wrap">
-			  <h3 class="video-title teams ">Twitch POV</h3>
-			  <div class="video-card">
-				<div
-				  class="video-shell"
-				  data-platform="twitch"
-				  data-video-id="2609194736"
-				  data-start="0"
-				></div>
-			  </div>
+				<h3 class="video-title teams ">Twitch POV</h3>
+				<div class="video-card">
+					<div class="video-shell" data-platform="twitch" data-video-id="2609194736" data-start="0"></div>
+				</div>
 			</article>
-			
-			
+
 		</div>
 
 		<div class="footer-note">
@@ -120,9 +113,383 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
-  <script src="app.js"></script>
+<script>
+	(() => {
+	const CONFIG = {
+		players: [
+			{ id: "player1", videoId: "9pvRbezK8Ko", start: 41, quality: "hd720" },
+			{ id: "player2", videoId: "_IWYetw6X1Q", start: 11, quality: "hd1080" },
+			{ id: "player3", videoId: "3H0DvdlLVEU", start: 129, quality: "hd1080" },
+			{ id: "player4", videoId: "X0KH7VcogFE", start: 95, quality: "hd1080" },
+			{ id: "player5", videoId: "aMVdJk2GGNw", start: 5, quality: "hd720" }
+		],
+		seekStep: 10,
+		uiTickMs: 120
+	};
+
+	const state = {
+		players: [],
+		readyCount: 0,
+		uiInterval: null,
+		isScrubbing: false,
+		firstMuted: false
+	};
+
+	const els = {
+		togglePlay: document.getElementById("togglePlay"),
+		togglePlayIcon: document.getElementById("togglePlayIcon"),
+		restartBoth: document.getElementById("restartBoth"),
+		rewindBoth: document.getElementById("rewindBoth"),
+		forwardBoth: document.getElementById("forwardBoth"),
+		stopBoth: document.getElementById("stopBoth"),
+		toggleMuteFirst: document.getElementById("toggleMuteFirst"),
+		muteFirstIcon: document.getElementById("muteFirstIcon"),
+		timeline: document.getElementById("timeline"),
+		currentTime: document.getElementById("currentTime"),
+		duration: document.getElementById("duration"),
+		statusText: document.getElementById("statusText")
+	};
+
+	function setStatus(text) {
+		els.statusText.textContent = text;
+	}
+
+	function formatTime(seconds) {
+		const total = Math.max(0, Math.floor(Number(seconds) || 0));
+		const hours = Math.floor(total / 3600);
+		const mins = Math.floor((total % 3600) / 60);
+		const secs = total % 60;
+
+		if (hours > 0) {
+			return `${hours}:${String(mins).padStart(2, "0")}:${String(secs).padStart(
+				2,
+				"0"
+			)}`;
+		}
+
+		return `${mins}:${String(secs).padStart(2, "0")}`;
+	}
+
+	function clamp(value, min, max) {
+		return Math.min(Math.max(value, min), max);
+	}
+
+	function getMaster() {
+		return state.players[0] || null;
+	}
+
+	function getFirstPlayer() {
+		return state.players[0]?.instance || null;
+	}
+
+	function getPlayerState(player) {
+		try {
+			return player?.getPlayerState?.();
+		} catch {
+			return -1;
+		}
+	}
+
+	function isAnyPlaying() {
+		return state.players.some(
+			(p) => getPlayerState(p.instance) === YT.PlayerState.PLAYING
+		);
+	}
+
+	function updatePlayButton() {
+		const playing = isAnyPlaying();
+		els.togglePlayIcon.textContent = playing ? "pause" : "play_arrow";
+		els.togglePlay.setAttribute(
+			"aria-label",
+			playing ? "Pause both videos" : "Play both videos"
+		);
+	}
+
+	function updateMuteButton() {
+		els.muteFirstIcon.textContent = state.firstMuted ? "volume_off" : "volume_up";
+		els.toggleMuteFirst.classList.toggle("btn--active", !state.firstMuted);
+		els.toggleMuteFirst.setAttribute(
+			"aria-label",
+			state.firstMuted ? "Unmute first video" : "Mute first video"
+		);
+	}
+
+	function getRelativeCurrent(playerObj) {
+		if (!playerObj?.instance?.getCurrentTime) return 0;
+		return Math.max(0, playerObj.instance.getCurrentTime() - playerObj.start);
+	}
+
+	function getRelativeDuration(playerObj) {
+		if (!playerObj?.instance?.getDuration) return 0;
+		return Math.max(0, playerObj.instance.getDuration() - playerObj.start);
+	}
+
+	function syncTimelineVisual(value, max) {
+		const safeMax = Math.max(0.0001, Number(max) || 100);
+		const pct = `${(Number(value) / safeMax) * 100}%`;
+		els.timeline.style.setProperty("--progress", pct);
+	}
+
+	function updateTimeline() {
+		const master = getMaster();
+		if (!master || !master.instance) return;
+
+		const current = getRelativeCurrent(master);
+		const duration = getRelativeDuration(master);
+
+		if (!state.isScrubbing) {
+			els.timeline.max = duration || 100;
+			els.timeline.value = clamp(current, 0, duration || 100);
+			syncTimelineVisual(els.timeline.value, els.timeline.max);
+			els.currentTime.textContent = formatTime(current);
+		}
+
+		els.duration.textContent = formatTime(duration);
+		updatePlayButton();
+	}
+
+	function runBoth(callback) {
+		state.players.forEach((playerObj) => {
+			if (playerObj.instance) callback(playerObj);
+		});
+	}
+
+	function playBoth() {
+		runBoth(({ instance }) => instance.playVideo());
+		setStatus("Playing both");
+		updatePlayButton();
+	}
+
+	function pauseBoth() {
+		runBoth(({ instance }) => instance.pauseVideo());
+		setStatus("Paused");
+		updatePlayButton();
+	}
+
+	function stopBoth() {
+		runBoth(({ instance }) => instance.stopVideo());
+		setStatus("Stopped");
+		updatePlayButton();
+	}
+
+	function restartBoth() {
+		runBoth(({ instance, start }) => {
+			instance.seekTo(start, true);
+			instance.playVideo();
+		});
+		setStatus("Restarted");
+		updatePlayButton();
+	}
+
+	function offsetBoth(seconds) {
+		runBoth(({ instance }) => {
+			const current = instance.getCurrentTime();
+			instance.seekTo(Math.max(0, current + seconds), true);
+		});
+		setStatus(
+			seconds > 0 ? `Forward ${seconds}s` : `Rewind ${Math.abs(seconds)}s`
+		);
+	}
+
+	function seekRelativeTo(relativeTime, shouldPlayAfter = false) {
+		runBoth(({ instance, start }) => {
+			instance.seekTo(start + relativeTime, true);
+			if (shouldPlayAfter) instance.playVideo();
+		});
+
+		els.currentTime.textContent = formatTime(relativeTime);
+		syncTimelineVisual(relativeTime, els.timeline.max);
+		setStatus(`Seek to ${formatTime(relativeTime)}`);
+	}
+
+	function toggleMuteFirst() {
+		const first = getFirstPlayer();
+		if (!first) return;
+
+		if (state.firstMuted) {
+			first.unMute();
+			state.firstMuted = false;
+			setStatus("First video unmuted");
+		} else {
+			first.mute();
+			state.firstMuted = true;
+			setStatus("First video muted");
+		}
+
+		updateMuteButton();
+	}
+
+	function onPlayerReady(event) {
+		const playerObj = state.players.find((p) => p.instance === event.target);
+		if (!playerObj) return;
+
+		playerObj.ready = true;
+		state.readyCount += 1;
+
+		try {
+			event.target.setPlaybackQuality(playerObj.quality);
+		} catch {}
+
+		if (playerObj.id === "player1") {
+			state.firstMuted = event.target.isMuted ? event.target.isMuted() : false;
+
+			if (state.firstMuted) {
+				try {
+					event.target.unMute();
+					state.firstMuted = false;
+				} catch {}
+			}
+		} else {
+			event.target.mute();
+		}
+
+		updateMuteButton();
+
+		if (state.readyCount === CONFIG.players.length) {
+			updateTimeline();
+
+			if (!state.uiInterval) {
+				state.uiInterval = setInterval(updateTimeline, CONFIG.uiTickMs);
+			}
+
+			setStatus("Loaded");
+		}
+	}
+
+	function onPlayerStateChange() {
+		updatePlayButton();
+	}
+
+	function onPlayerError(event, label) {
+		setStatus(`${label} error: ${event.data}`);
+		console.error(`${label} error`, event.data);
+	}
+
+	window.onYouTubeIframeAPIReady = function () {
+		const origin = window.location.origin;
+
+		state.players = CONFIG.players.map((cfg, index) => {
+			const instance = new YT.Player(cfg.id, {
+				width: "100%",
+				height: "100%",
+				videoId: cfg.videoId,
+				playerVars: {
+					autoplay: 0,
+					controls: 0,
+					rel: 0,
+					playsinline: 1,
+					enablejsapi: 1,
+					origin,
+					start: cfg.start
+				},
+				events: {
+					onReady: onPlayerReady,
+					onStateChange: onPlayerStateChange,
+					onError: (e) => onPlayerError(e, `Player ${index + 1}`)
+				}
+			});
+
+			return {
+				...cfg,
+				instance,
+				ready: false
+			};
+		});
+
+		setStatus("Initializing players…");
+	};
+
+	els.togglePlay.addEventListener("click", () => {
+		if (isAnyPlaying()) {
+			pauseBoth();
+		} else {
+			playBoth();
+		}
+	});
+
+	els.stopBoth.addEventListener("click", stopBoth);
+	els.restartBoth.addEventListener("click", restartBoth);
+	els.rewindBoth.addEventListener("click", () => offsetBoth(-CONFIG.seekStep));
+	els.forwardBoth.addEventListener("click", () => offsetBoth(CONFIG.seekStep));
+	els.toggleMuteFirst.addEventListener("click", toggleMuteFirst);
+
+	els.timeline.addEventListener("input", () => {
+		state.isScrubbing = true;
+		syncTimelineVisual(els.timeline.value, els.timeline.max);
+		els.currentTime.textContent = formatTime(els.timeline.value);
+	});
+
+	els.timeline.addEventListener("change", () => {
+		const target = Number(els.timeline.value) || 0;
+		const keepPlaying = isAnyPlaying();
+		seekRelativeTo(target, keepPlaying);
+		state.isScrubbing = false;
+	});
+
+	els.timeline.addEventListener("pointerdown", () => {
+		state.isScrubbing = true;
+	});
+
+	els.timeline.addEventListener("pointerup", () => {
+		state.isScrubbing = false;
+	});
+
+	document.addEventListener("keydown", (event) => {
+		const tag = document.activeElement?.tagName;
+		const typing =
+			tag === "INPUT" ||
+			tag === "TEXTAREA" ||
+			document.activeElement?.isContentEditable;
+
+		if (typing && document.activeElement !== els.timeline) return;
+
+		switch (event.key) {
+			case " ":
+			case "k":
+			case "K":
+				event.preventDefault();
+				els.togglePlay.click();
+				break;
+			case "ArrowLeft":
+				event.preventDefault();
+				offsetBoth(-CONFIG.seekStep);
+				break;
+			case "ArrowRight":
+				event.preventDefault();
+				offsetBoth(CONFIG.seekStep);
+				break;
+			case "r":
+			case "R":
+				event.preventDefault();
+				restartBoth();
+				break;
+			case "s":
+			case "S":
+				event.preventDefault();
+				stopBoth();
+				break;
+			case "m":
+			case "M":
+				event.preventDefault();
+				toggleMuteFirst();
+				break;
+		}
+	});
+
+	window.addEventListener("beforeunload", () => {
+		if (state.uiInterval) clearInterval(state.uiInterval);
+		runBoth(({ instance }) => {
+			try {
+				instance.destroy();
+			} catch {}
+		});
+	});
+})();
+
+</script>
 </body>
 </html>
+
 
 
 
