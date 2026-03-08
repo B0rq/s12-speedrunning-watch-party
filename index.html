@@ -39,10 +39,6 @@
 				<button class="btn" id="toggleMuteFirst" type="button" aria-label="Toggle first video audio">
 					<span class="material-symbols-rounded" id="muteFirstIcon">volume_up</span>
 				</button>
-
-				<button class="btn btn--danger" id="stopBoth" type="button" aria-label="Stop both videos">
-					<span class="material-symbols-rounded">stop</span>
-				</button>
 			</div>
 
 			<div class="timeline-row">
@@ -110,7 +106,6 @@
 				<span class="kbd">←</span> back,
 				<span class="kbd">→</span> forward,
 				<span class="kbd">R</span> restart,
-				<span class="kbd">S</span> stop,
 				<span class="kbd">M</span> mute first
 			</span>
 			<span id="statusText">Ready</span>
@@ -152,7 +147,6 @@
 		restartBoth: document.getElementById("restartBoth"),
 		rewindBoth: document.getElementById("rewindBoth"),
 		forwardBoth: document.getElementById("forwardBoth"),
-		stopBoth: document.getElementById("stopBoth"),
 		toggleMuteFirst: document.getElementById("toggleMuteFirst"),
 		muteFirstIcon: document.getElementById("muteFirstIcon"),
 		timeline: document.getElementById("timeline"),
@@ -325,20 +319,6 @@ function stopTwitch() {
 		setStatus("Paused");
 		updatePlayButton();
 	}
-
-function stopBoth() {
-	runBoth(({ instance, start }) => {
-		try {
-			instance.pauseVideo();
-			instance.seekTo(start, true);
-		} catch {}
-	});
-
-	stopTwitch();
-
-	setStatus("Stopped");
-	updatePlayButton();
-}
 
 	function restartBoth() {
 		runBoth(({ instance, start }) => {
@@ -551,7 +531,6 @@ function stopBoth() {
 		}
 	});
 
-	els.stopBoth.addEventListener("click", stopBoth);
 	els.restartBoth.addEventListener("click", restartBoth);
 	els.rewindBoth.addEventListener("click", () => offsetBoth(-CONFIG.seekStep));
 	els.forwardBoth.addEventListener("click", () => offsetBoth(CONFIG.seekStep));
@@ -607,11 +586,6 @@ function stopBoth() {
 				event.preventDefault();
 				restartBoth();
 				break;
-			case "s":
-			case "S":
-				event.preventDefault();
-				stopBoth();
-				break;
 			case "m":
 			case "M":
 				event.preventDefault();
@@ -638,6 +612,7 @@ function stopBoth() {
 </script>
 </body>
 </html>
+
 
 
 
