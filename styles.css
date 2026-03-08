@@ -52,7 +52,7 @@ body {
 }
 
 .app {
-	width: min(1600px, 100%);
+	width: 90%;
 	display: grid;
 	gap: var(--gap);
 }
