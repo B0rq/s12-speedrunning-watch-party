@@ -309,23 +309,27 @@ h1 {
 
 .team-harvest {
 	color: #6969ff;
-	background: #15152b;
+	background: rgba(21, 21, 43, 0.8);
 }
+
 .team-progression {
 	color: #008800;
-	background: #0d1a0d;
+	background: rgba(13, 26, 13, 0.8);
 }
+
 .team-tower {
 	color: #ff4d4d;
-	background: #2b1414;
+	background: rgba(43, 20, 20, 0.8);
 }
+
 .team-pit {
 	color: #ae00ff;
-	background: #1e0f2b;
+	background: rgba(30, 15, 43, 0.8);
 }
+
 .team-trist-hole {
 	color: #ffa800;
-	background: #2b1e0f;
+	background: rgba(43, 30, 15, 0.8);
 }
 
 .footer-note {
