@@ -303,33 +303,18 @@ h1 {
 
 .team-harvest {
 	color: #6969ff;
-	border-left: 1px solid #6969ff;
-	border-bottom: 1px solid #6969ff;
-	border-right: 1px solid #6969ff;
 }
 .team-progression {
 	color: #008800;
-	border-left: 1px solid #008800;
-	border-bottom: 1px solid #008800;
-	border-right: 1px solid #008800;
 }
 .team-tower {
 	color: #ff4d4d;
-	border-left: 1px solid #ff4d4d;
-	border-bottom: 1px solid #ff4d4d;
-	border-right: 1px solid #ff4d4d;
 }
 .team-pit {
 	color: #ae00ff;
-	border-left: 1px solid #ae00ff;
-	border-bottom: 1px solid #ae00ff;
-	border-right: 1px solid #ae00ff;
 }
 .team-trist-hole {
 	color: #ffa800;
-	border-left: 1px solid #ffa800;
-	border-bottom: 1px solid #ffa800;
-	border-right: 1px solid #ffa800;
 }
 
 .footer-note {
