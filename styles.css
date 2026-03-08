@@ -184,16 +184,6 @@ h1 {
 	filter: brightness(1.05);
 }
 
-.btn--danger {
-	color: #fff;
-	background: linear-gradient(
-		180deg,
-		rgba(255, 107, 107, 0.22),
-		rgba(255, 107, 107, 0.1)
-	);
-	border-color: rgba(255, 107, 107, 0.28);
-}
-
 .btn--active {
 	box-shadow: 0 0 0 2px rgba(124, 156, 255, 0.2) inset;
 	border-color: rgba(124, 156, 255, 0.38);
