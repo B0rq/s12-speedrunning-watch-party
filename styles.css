@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+
 :root {
 	--bg: #0b0d12;
 	--border: rgba(255, 255, 255, 0.12);
@@ -296,25 +298,34 @@ h1 {
 }
 
 .teams {
-	font-size: 12px;
+	font-size: 10px;
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 	border-bottom-left-radius: 6px;
 	border-bottom-right-radius: 6px;
 }
 
 .team-harvest {
 	color: #6969ff;
+	background: ##15152b;
 }
 .team-progression {
 	color: #008800;
+	background: #0d1a0d;
 }
 .team-tower {
 	color: #ff4d4d;
+	background: #2b1414;
 }
 .team-pit {
 	color: #ae00ff;
+	background: #1e0f2b;
 }
 .team-trist-hole {
 	color: #ffa800;
+	background: #2b1e0f;
 }
 
 .footer-note {
