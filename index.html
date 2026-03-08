@@ -320,24 +320,23 @@ function stopTwitch() {
 		updatePlayButton();
 	}
 
-	function restartBoth() {
-		runBoth(({ instance, start }) => {
-			instance.seekTo(start, true);
-			instance.playVideo();
-		});
+function restartBoth() {
+	runBoth(({ instance, start }) => {
+		instance.seekTo(start, true);
+		instance.playVideo();
+	});
 
-		if (twitchReady) {
-			try {
-				seekTwitchToAbsolute(twitchStart);
-				setTimeout(() => {
-					playTwitch();
-				}, 150);
-			} catch {}
-		}
+	if (twitchReady) {
+		twitchPlayer.seek(twitchStart);
 
-		setStatus("Restarted");
-		updatePlayButton();
+		setTimeout(() => {
+			twitchPlayer.play();
+		}, 150);
 	}
+
+	setStatus("Restarted");
+	updatePlayButton();
+}
 
 	function offsetBoth(seconds) {
 		runBoth(({ instance }) => {
@@ -466,7 +465,7 @@ function stopTwitch() {
 		parent: [window.location.hostname],
 		autoplay: false,
 		muted: true,
-		time: "0h0m4s"
+		time: `0h0m${twitchStart}s`
 	});
 
 	twitchPlayer.addEventListener(Twitch.Player.READY, () => {
@@ -474,12 +473,9 @@ function stopTwitch() {
 
 		try {
 			twitchPlayer.setQuality("chunked");
-		} catch {}
-
-		try {
 			twitchPlayer.setMuted(true);
 			twitchPlayer.pause();
-			twitchPlayer.setVideo("v2609194736", 0);
+			twitchPlayer.seek(twitchStart);
 		} catch {}
 	});
 
@@ -612,6 +608,7 @@ function stopTwitch() {
 </script>
 </body>
 </html>
+
 
 
 
